@@ -73,6 +73,7 @@ Predict the probability of **default payment next month** for a customer based o
 ---
 
 ## Architecture
+```text
  ┌─────────────────────────────┐
  │         User / Client        │
  │   (Laptop / Mobile Browser)  │
@@ -117,7 +118,7 @@ Predict the probability of **default payment next month** for a customer based o
  │ UI shows result + chart      │
  └─────────────────────────────┘
 
-
+```
 ## 📂 Project Structure
 ```bash
 pred/
