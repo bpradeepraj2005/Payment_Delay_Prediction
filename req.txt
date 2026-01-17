@@ -1,0 +1,17 @@
+fastapi
+uvicorn
+jinja2
+numpy
+scikit-learn
+joblib
+python-multipart
+pandas
+xlrd
+
+
+git init
+git add .
+git commit -m "Payment Delay Prediction Deployment"
+git branch -M main
+git remote add origin https://github.com/bpradeepraj2005/Payment_Delay_Prediction.git
+git push -u origin main

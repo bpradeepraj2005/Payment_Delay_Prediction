@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
+
+  
+  <title>Payment Delay Prediction</title>
+
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="brand">
+      <span class="logo">💳</span>
+      <div>
+        <h1>Payment Delay Prediction</h1>
+        <p>FastAPI + ML Model (GridSearchCV)</p>
+      </div>
+    </div>
+
+    <div class="nav-right">
+      <a class="nav-link" href="/docs" target="_blank">API Docs</a>
+      <button class="ghost-btn" id="sampleBtn">Load Sample</button>
+    </div>
+  </nav>
+
+  <main class="container">
+    <section class="grid">
+
+      <!-- LEFT: Form -->
+      <div class="card">
+        <div class="card-header">
+          <h2>Customer Details</h2>
+          <p>Fill the inputs and click <b>Predict</b>.</p>
+        </div>
+
+        <form id="predictForm" class="form">
+
+          <div class="row">
+            <div class="field">
+              <label>Credit Limit (LIMIT_BAL)</label>
+              <input type="number" id="LIMIT_BAL" value="20000" step="1000" required />
+            </div>
+
+            <div class="field">
+              <label>Age</label>
+              <input type="number" id="AGE" value="24" required />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="field">
+              <label>Gender</label>
+              <select id="SEX">
+                <option value="1">Male</option>
+                <option value="2" selected>Female</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Education</label>
+              <select id="EDUCATION">
+                <option value="1">Graduate School</option>
+                <option value="2" selected>University</option>
+                <option value="3">High School</option>
+                <option value="4">Others</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="field">
+              <label>Marriage</label>
+              <select id="MARRIAGE">
+                <option value="1" selected>Married</option>
+                <option value="2">Single</option>
+                <option value="3">Others</option>
+              </select>
+            </div>
+
+            <div class="field hint">
+              <label>Tip</label>
+              <div class="hint-box">
+                Higher PAY values = more delay risk
+              </div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <h3 class="section-title">Payment Delay Status (Months)</h3>
+
+          <div class="row">
+            <div class="field">
+              <label>PAY_0 (Sep): <span class="pill" id="PAY_0_val">0</span></label>
+              <input type="range" id="PAY_0" min="-1" max="9" value="0" />
+            </div>
+            <div class="field">
+              <label>PAY_2 (Aug): <span class="pill" id="PAY_2_val">0</span></label>
+              <input type="range" id="PAY_2" min="-1" max="9" value="0" />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="field">
+              <label>PAY_3 (Jul): <span class="pill" id="PAY_3_val">0</span></label>
+              <input type="range" id="PAY_3" min="-1" max="9" value="0" />
+            </div>
+            <div class="field">
+              <label>PAY_4 (Jun): <span class="pill" id="PAY_4_val">0</span></label>
+              <input type="range" id="PAY_4" min="-1" max="9" value="0" />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="field">
+              <label>PAY_5 (May): <span class="pill" id="PAY_5_val">0</span></label>
+              <input type="range" id="PAY_5" min="-1" max="9" value="0" />
+            </div>
+            <div class="field">
+              <label>PAY_6 (Apr): <span class="pill" id="PAY_6_val">0</span></label>
+              <input type="range" id="PAY_6" min="-1" max="9" value="0" />
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <h3 class="section-title">Bills & Payments</h3>
+
+          <div class="row">
+            <div class="field">
+              <label>BILL_AMT1</label>
+              <input type="number" id="BILL_AMT1" value="3913" />
+            </div>
+            <div class="field">
+              <label>PAY_AMT1</label>
+              <input type="number" id="PAY_AMT1" value="0" />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="field">
+              <label>BILL_AMT2</label>
+              <input type="number" id="BILL_AMT2" value="3102" />
+            </div>
+            <div class="field">
+              <label>PAY_AMT2</label>
+              <input type="number" id="PAY_AMT2" value="689" />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="field">
+              <label>BILL_AMT3</label>
+              <input type="number" id="BILL_AMT3" value="689" />
+            </div>
+            <div class="field">
+              <label>PAY_AMT3</label>
+              <input type="number" id="PAY_AMT3" value="0" />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="field">
+                <label>BILL_AMT4</label>
+                <input type="number" id="BILL_AMT4" value="0" />
+            </div>
+            <div class="field">
+                <label>PAY_AMT4</label>
+                <input type="number" id="PAY_AMT4" value="0" />
+            </div>
+            </div>
+
+            <div class="row">
+            <div class="field">
+                <label>BILL_AMT5</label>
+                <input type="number" id="BILL_AMT5" value="0" />
+            </div>
+            <div class="field">
+                <label>PAY_AMT5</label>
+                <input type="number" id="PAY_AMT5" value="0" />
+            </div>
+            </div>
+
+            <div class="row">
+            <div class="field">
+                <label>BILL_AMT6</label>
+                <input type="number" id="BILL_AMT6" value="0" />
+            </div>
+            <div class="field">
+                <label>PAY_AMT6</label>
+                <input type="number" id="PAY_AMT6" value="0" />
+            </div>
+            </div>
+
+
+          <div class="actions">
+            <button type="submit" class="primary-btn" id="predictBtn">
+              Predict
+            </button>
+            <button type="button" class="secondary-btn" id="resetBtn">
+              Reset
+            </button>
+          </div>
+
+        </form>
+      </div>
+
+      <!-- RIGHT: Output -->
+      <div class="card">
+        <div class="card-header">
+          <h2>Prediction Output</h2>
+          <p>Result + risk probability</p>
+        </div>
+
+        <div class="result-area">
+          <div id="badge" class="badge neutral">Waiting for input…</div>
+
+          <div class="meter">
+            <div class="meter-top">
+              <span>Risk Probability</span>
+              <span id="riskText">0.00</span>
+            </div>
+            <div class="meter-bar">
+              <div class="meter-fill" id="meterFill" style="width: 0%"></div>
+            </div>
+          </div>
+
+          <div class="mini-cards">
+            <div class="mini">
+              <p class="mini-title">Prediction</p>
+              <p class="mini-value" id="predText">-</p>
+            </div>
+            <div class="mini">
+              <p class="mini-title">Meaning</p>
+              <p class="mini-value" id="meaningText">-</p>
+            </div>
+          </div>
+
+          <div class="chart-box">
+            <div class="chart-head">
+                <span>📊 Bill vs Payment (Last 6 Months)</span>
+            </div>
+            <canvas id="billPayChart"></canvas>
+        </div>
+
+
+          <div class="json-box">
+            <div class="json-head">
+              <span>Raw API Response</span>
+              <button class="ghost-btn small" id="copyBtn">Copy</button>
+            </div>
+            <pre id="rawJson">{ }</pre>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <footer class="footer">
+      Built for College Project Demo • FastAPI • RandomForest • GridSearchCV
+    </footer>
+  </main>
+
+  <script src="/static/script.js"></script>
+</body>
+</html>
